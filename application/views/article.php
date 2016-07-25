@@ -90,24 +90,13 @@
                 var top = (screen.height / 2) - (h / 2);
                 return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
             }
-            function sendComment() {
-                var comment = $('.commentarea:first').text();
-                $.ajax({
-                    url: "../comment",
-                    type: "post",
-                    data: {comment: comment},
-                    success: function (responce) {
 
-                    },
-                    error: function () {
-
-                    }
-                });
-            }
 
 /////////////angular///
             var app = angular.module('myApp', []);
             app.controller('commentsCtrl', function ($scope, $http) {
+                $scope.post_id;
+
                 $scope.comments = [];
                 $scope.lastcomment = 1;
                 $scope.lastName = "Doe";
@@ -131,6 +120,21 @@
 
                         });
                     }
+                };
+
+                $scope.sendComment = function () {
+                    var post_id = $("#post_id").val();
+                    $.ajax({
+                        url: "../comment",
+                        type: "post",
+                        data: {'comment': $scope.comment, 'post_id': post_id},
+                        success: function (responce) {
+
+                        },
+                        error: function () {
+
+                        }
+                    });
                 };
             });
 //////////////////////    
@@ -171,7 +175,6 @@
         <?php
         // var_dump($this->_ci_cached_vars);
         $this->load->view($nev);
-        var_dump($nev);
         ?>
 
         <div class="container">
@@ -200,7 +203,8 @@
                         </div>
 
                         <div  class="panel article-auther">
-                            <img alt="" src="http://1.gravatar.com/avatar/18635cef09f45858ce6b07c8612c9f5b?s=60&amp;d=mm&amp;r=g" srcset="http://1.gravatar.com/avatar/18635cef09f45858ce6b07c8612c9f5b?s=120&amp;d=mm&amp;r=g 2x" class="avatar avatar-60 photo" height="60" width="60">					<h5>by <strong>Martin Angelov</strong></h5>
+                            <img alt="" src="http://1.gravatar.com/avatar/18635cef09f45858ce6b07c8612c9f5b?s=60&amp;d=mm&amp;r=g" src="http://1.gravatar.com/avatar/18635cef09f45858ce6b07c8612c9f5b?s=120&amp;d=mm&amp;r=g 2x" class="avatar avatar-60 photo" height="60" width="60">					
+                            <h5>by <strong><?php echo $details['author'] ?></strong></h5>
                             <p>Martin is a web developer with an eye for design from Bulgaria. He founded Tutorialzine in 2009 and it still is his favorite side project.</p>
                         </div>
                     </div>
@@ -231,6 +235,8 @@
         <hr>
 
         <section class="comments container" ng-controller="commentsCtrl">
+            <!--  <?php var_dump($details) ?>-->
+            <input id="post_id" type="hidden" value="<?php echo $details['post_id']; ?>"/>
             <ul class = "media-list col-md-4 col-lg-8">
                 <li class = "media panel">
                     <a class = "pull-left commenter-img" href ="">
@@ -241,11 +247,11 @@
                         <div>
                             <h4 class = "media-heading">right a comment</h4>
 
-                            <div class="commentarea" contenteditable="true"></div>
+                            <input class="commentarea" ng-model="comment"/>
                         </div>
                         <div class="clearfix"></div>
                         <div>
-                            <input type="button" value="comment" class="btn btn-default" id="commentbtn"/>
+                            <input type="button" value="comment" class="btn btn-default" id="commentbtn" ng-click="sendComment()"/>
                         </div>
 
                     </div>

@@ -9,7 +9,7 @@ class Article_model extends CI_Model {
     function getPost($post_id) {
         $content = file_get_contents("postdb/post_$post_id.html");
         $this->db->where('post_id', $post_id);
-        $this->db->select('title, likes, views,shares,date,user_id');
+        $this->db->select('post_id,title, likes, views,shares,date,user_id');
         $query = $this->db->get('articles');
         $data = $query->result_array();
         $userid = $this->getUserData($data[0]['user_id']);

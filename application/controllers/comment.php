@@ -1,6 +1,8 @@
 <?php
 
-class Comment extends CI_Controller {
+require_once(APPPATH . 'core/MY_User.php');
+
+class Comment extends MY_User {
 
     public function __construct() {
         parent::__construct();
@@ -10,10 +12,7 @@ class Comment extends CI_Controller {
     }
 
     function index() {
-        $this->load->model('comment_model');
-        $comment = $this->comment_model->getComment();
-        echo 'ooo  ' . $comment;
-        $this->comment_model->insertComment($comment);
+        $this->insertComment();
     }
 
     function getComments() {
@@ -29,11 +28,25 @@ class Comment extends CI_Controller {
         echo(json_encode($res['comments']));
     }
 
-    function getPostComments($post_id,$start) {
+    function getPostComments($post_id, $start) {
         $this->load->model('comment_model');
         $res['comments'] = $this->comment_model->getPostComments($post_id, $start, 3);
         header('Content-Type: application/json');
         echo(json_encode($res['comments']));
+    }
+
+    function insertComment() {
+
+        $comment = $this->input->post("comment");
+        $post_id = $this->input->post("post_id");
+        //validate requred
+
+
+        $user = $this->getLoggedUser();
+        $user_id = $user->user_id;
+
+        $this->load->model('comment_model');
+        $this->comment_model->insertComment($user_id, $comment, $post_id);
     }
 
 }

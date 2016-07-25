@@ -23,7 +23,8 @@ class MY_User extends CI_Controller {
         $ses_user = $this->session->userdata('user');
         $this->load->model("usersmodel");
         $user=$this->usersmodel->getUserFromId($ses_user->user_id);
-        var_dump($user);
+        return $user;
+        //var_dump($user);
     }
 
 }
