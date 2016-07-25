@@ -12,7 +12,7 @@ class Comment extends CI_Controller {
     function index() {
         $this->load->model('comment_model');
         $comment = $this->comment_model->getComment();
-        //echo 'ooo  ' . $comment;
+        echo 'ooo  ' . $comment;
         $this->comment_model->insertComment($comment);
     }
 

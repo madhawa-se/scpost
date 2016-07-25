@@ -16,9 +16,9 @@
 
     </head>
     <body>
-        <script src="<?php echo base_url() ?>js/jquery-2.2.1.min.js"></script>
-        <script src="<?php echo base_url() ?>js/bootstrap.min.js"></script>
-        <script src="<?php echo base_url() ?>js/summernote.js"></script>
+        <script src="<?php echo base_url() ?>js/libs/jquery-2.2.1.min.js"></script>
+        <script src="<?php echo base_url() ?>js/libs/bootstrap.min.js"></script>
+        <script src="<?php echo base_url() ?>js/libs/summernote.js"></script>
         <script>
             $(document).ready(function () {
                 $('#summernote').summernote();

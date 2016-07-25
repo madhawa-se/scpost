@@ -13,7 +13,7 @@ class Article_model extends CI_Model {
         $query = $this->db->get('articles');
         $data = $query->result_array();
         $userid = $this->getUserData($data[0]['user_id']);
-        $data[0]['author'] = $userid->nickname;
+        $data[0]['author'] = $userid->firstname;
         $articleData = array('content' => $content, 'details' => $data[0]);
         return $articleData;
     }
@@ -32,7 +32,7 @@ class Article_model extends CI_Model {
 
     function getUserData($user_id) {
         $this->db->where('user_id', $user_id);
-        $this->db->select('nickname');
+        $this->db->select('firstname');
         $query = $this->db->get('users');
         $userData = $query->result();
         return $userData[0];
@@ -76,6 +76,11 @@ class Article_model extends CI_Model {
         }
         $state = $this->writePost($resultArray['insert_id'], $data['article-content']);
         return $state;
+    }
+
+    function getPopularPosts() {
+        $this->db->select('*')->from('articles')->order_by('date', 'DESC')->limit(10); //constant
+        return $this->db->get()->result();
     }
 
 }

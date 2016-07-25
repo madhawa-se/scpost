@@ -86,7 +86,14 @@ class Usersmodel extends CI_Model {
         return $query->result()[0];
     }
 
+    function getUserFromId($user_id) {
+
+        $query = $this->db->select('*')->where('user_id', $user_id)->get('users');
+        return $query->result()[0];
+    }
+
     function setUser($userarr) {
+        //bad move to controller
         $userarr->loggedin = true;
         $this->session->set_userdata(array('user' => $userarr));
     }

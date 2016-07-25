@@ -171,6 +171,7 @@
         <?php
         // var_dump($this->_ci_cached_vars);
         $this->load->view($nev);
+        var_dump($nev);
         ?>
 
         <div class="container">
