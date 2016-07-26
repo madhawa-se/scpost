@@ -1,5 +1,5 @@
 <?php ?>
-<html>
+<html ng-app="myapp">
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
@@ -10,6 +10,18 @@
             .note-editable{
                 min-height: 300px;
             }
+            .model-dark{
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: rgba(26, 26, 26, 0.51);
+                z-index: 1050;
+            }
+            .model-pop{
+                position: relative;
+            }
         </style>
 
 
@@ -18,15 +30,88 @@
     <body>
         <script src="<?php echo base_url() ?>js/libs/jquery-2.2.1.min.js"></script>
         <script src="<?php echo base_url() ?>js/libs/bootstrap.min.js"></script>
+        <script src="<?php echo base_url() ?>js/libs/angular.min.js"></script>
         <script src="<?php echo base_url() ?>js/libs/summernote.js"></script>
         <script>
+
+
+            var myapp = angular.module('myapp', []);
+            myapp.directive("fileread", [function () {
+                    return {
+                        scope: {
+                            imsrc: '='
+                        },
+                        link: function (scope, element, attributes) {
+                            element.bind("change", function (changeEvent) {
+                                var reader = new FileReader();
+                                reader.onload = function (loadEvent) {
+                                    scope.$apply(function () {
+                                        scope.fileread = loadEvent.target.result;
+                                        alert(scope.fileread);
+                                    });
+                                }
+                                reader.readAsDataURL(changeEvent.target.files[0]);
+                            });
+                        }
+                    }
+                }]);
+
+            myapp.controller('thumbCTRL', function ($scope) {
+                $scope.imgSrc;
+                $scope.fuck = true;
+                $scope.modelVisible = false;
+                $scope.setVisible = function (state) {
+                    $scope.$apply(function () {
+                        $scope.modelVisible = state;
+                    });
+                };
+            });
             $(document).ready(function () {
-                $('#summernote').summernote();
+                $('#summernote').summernote({
+                    toolbar: [
+                        ['post', ['postimg', 'postbar']],
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                    ,
+                    buttons: {
+                        postimg: postimgBtn, postbar: postimgBtn
+                    }
+                });
                 $('#sourcegen').click(function () {
                     var markupStr = $('#summernote').summernote('code');
                     alert(markupStr);
                 });
+
+                var node = document.createElement('p');
+                node.id = "postthumb";
+                $('#summernote').summernote('insertNode', node);
             });
+
+            var postimgBtn = function (context) {
+
+
+                var ui = $.summernote.ui;
+
+                // create button
+                var button = ui.button({
+                    contents: '<i class="fa fa-child"/> Hello',
+                    tooltip: 'hello',
+                    click: function () {
+                        angular.element('#model-wrapper').scope().setVisible(true);
+                        //context.invoke('editor.insertText', 'hello');
+                        // alert("hi");
+                    }
+                });
+
+                return button.render();   // return button as jquery object 
+            }
         </script>
 
         <nav class="navbar navbar-default navbar-inverse">
@@ -105,8 +190,36 @@
                 </div>
             </form>
         </div>
-
-
+        <div ng-controller="thumbCTRL" id="model-wrapper">{{fuck}}
+            <div class="model-dark" ng-show="modelVisible">
+                <div class="model-pop" id="imgSelecter" >
+                    <div class="modal-dialog"> 
+                        <div class="modal-content">    
+                            <div class="modal-header">    
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="modelVisible=false">
+                                    <span aria-hidden="true" >×</span>
+                                </button>    
+                                <h4 class="modal-title">Insert Image</h4>    
+                            </div>    
+                            <div class="modal-body">
+                                <div class="form-group note-group-select-from-files">
+                                    <label>Select from files</label>
+        <!--                            <input class="note-image-input form-control" id="fileimg" ng-model="imgmodel" ng-change="readURL" name="files" accept="image/*" type="file">-->
+                                    <input type="file" fileread="vm.uploadme" />
+                                </div>
+                                <div class="form-group" style="overflow:auto;"><label>Image URL</label>
+                                    <input class="note-image-url form-control col-md-12" type="text">
+                                    <div class=""><img ng-src="{{imsrc}}"/></div>
+                                </div>
+                            </div>    
+                            <div class="modal-footer">
+                                <button href="#" class="btn btn-primary note-image-btn " >Insert Image</button>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
