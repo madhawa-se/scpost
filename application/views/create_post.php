@@ -1,14 +1,17 @@
 <?php ?>
-<html>
+<html ng-app="myapp">
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
         <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.1/summernote.css" rel="stylesheet">
-        <style>
+        <style type="text/css">
             .note-editable{
                 min-height: 300px;
+            }
+            .dark {
+                background-color: rgba(0, 0, 0, 0.49) !important;
             }
         </style>
 
@@ -18,15 +21,76 @@
     <body>
         <script src="<?php echo base_url() ?>js/libs/jquery-2.2.1.min.js"></script>
         <script src="<?php echo base_url() ?>js/libs/bootstrap.min.js"></script>
+        <script src="<?php echo base_url() ?>js/libs/angular.min.js"></script>
         <script src="<?php echo base_url() ?>js/libs/summernote.js"></script>
         <script>
             $(document).ready(function () {
-                $('#summernote').summernote();
+                $('#summernote').summernote({
+                    toolbar: [
+                        ['mybutton', ['hello']],
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'hr']],
+                        ['view', ['fullscreen', 'codeview']],
+                        ['help', ['help']]
+                    ],
+                    buttons: {
+                        hello: HelloButton
+                    }
+                });
                 $('#sourcegen').click(function () {
                     var markupStr = $('#summernote').summernote('code');
                     alert(markupStr);
                 });
+
             });
+
+            var HelloButton = function (context) {
+                var ui = $.summernote.ui;
+
+                // create button
+                var button = ui.button({
+                    contents: '<i class="fa fa-child"/> Hello',
+                    tooltip: 'hello',
+                    click: function () {
+                        angular.element($('#postCtrlId')).scope().setVisible(true);
+                    }
+                });
+
+                return button.render();   // return button as jquery object 
+            }
+
+            var myapp = angular.module('myapp', []);
+            myapp.controller('postCTRL', function ($scope) {
+                $scope.name = "madhawa";
+                $scope.modelvisible = false;
+                $scope.setVisible = function (state) {
+                    $scope.$apply(function () {
+                        $scope.modelvisible = state;
+                    });
+
+                };
+
+                $scope.setFile = function (element) {
+                    $scope.currentFile = element.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        $scope.image_source = event.target.result
+                        $scope.$apply()
+
+                    };
+                    // when the file is read it triggers the onload event above.
+                    reader.readAsDataURL(element.files[0]);
+                };
+            });
+
+
         </script>
 
         <nav class="navbar navbar-default navbar-inverse">
@@ -82,28 +146,61 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
+        <div id="postCtrlId" ng-controller="postCTRL">
+            <div  class="container" >
+                <input type="file" id="trigger" onchange="angular.element(this).scope().setFile(this)" accept="image/*">
+                <img ng-src="{{image_source}}">
+                <?php echo validation_errors(); ?>
+                <?php echo form_open('create_post'); ?>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="article-name">Article title:{{modelvisible}}</label>
+                        <input type="text" class="form-control" id="article-name" name="article-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">tags</label>
+                        <span class="article-tags">
+                            <span class="label label-success">biology </span>
+                            <span class="label label-warning">modern </span>
+                            <span class="label label-info">space </span> 
+                        </span>
+                    </div>
+                    <button type="submit" class="btn btn-default">Post article</button> <br><br>
+                    <div class="row">
+                        <textarea  id="summernote" name="summernote">write your post here.use markup buttons to style your post.</textarea >
+                    </div>
+                </form>
+            </div>
 
-        <div class="container">
-            <?php echo validation_errors(); ?>
-            <?php echo form_open('create_post'); ?>
-            <form role="form">
-                <div class="form-group">
-                    <label for="article-name">Article title:</label>
-                    <input type="text" class="form-control" id="article-name" name="article-name">
+            <!-- model-->
+
+            <div ng-show="modelvisible" style="display: block; padding-right: 17px;" class="modal in dark" aria-hidden="false" tabindex="-1">
+                <div class="modal-dialog"> 
+                    <div class="modal-content"> 
+                        <div class="modal-header">  
+                            <button type="button" ng-click="modelvisible=false" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" >×</span>
+                            </button>     
+                            <h4 class="modal-title">Insert Image</h4>
+                        </div> 
+                        <div class="modal-body">
+                            <div class="form-group note-group-select-from-files">
+                                <label>Select from files</label>
+                                <input class="note-image-input form-control" name="files" accept="image/*" type="file">
+                            </div>
+                            <div class="form-group" style="overflow:auto;">
+                                <label>Image URL</label>
+                                <input class="note-image-url form-control col-md-12" type="text">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button href="#" class="btn btn-primary note-image-btn disabled" disabled="">Insert Image</button>
+                        </div> 
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="pwd">tags</label>
-                    <span class="article-tags">
-                        <span class="label label-success">biology </span>
-                        <span class="label label-warning">modern </span>
-                        <span class="label label-info">space </span> 
-                    </span>
-                </div>
-                <button type="submit" class="btn btn-default">Post article</button> <br><br>
-                <div class="row">
-                    <textarea  id="summernote" name="summernote">write your post here.use markup buttons to style your post.</textarea >
-                </div>
-            </form>
+            </div>
+
+            <!--end model-->
         </div>
 
 
