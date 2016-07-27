@@ -88,7 +88,7 @@
                                         <option value="200">200</option>
                                         <option value="300">300</option>
                                         <option value="400">400</option>
-                                        <option value="500">500</option>
+                                        <option value="500">600</option>
                                         <option value="1000">1000</option>
                                     </select>                                
                                 </div> 
