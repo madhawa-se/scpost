@@ -43,6 +43,9 @@
                         hello: HelloButton
                     }
                 });
+                var node = document.createElement('p');
+                node.id = "thumbnailholder";
+                $('#summernote').summernote('insertNode', node)
                 $('#sourcegen').click(function () {
                     var markupStr = $('#summernote').summernote('code');
                     alert(markupStr);
@@ -55,7 +58,7 @@
 
                 // create button
                 var button = ui.button({
-                    contents: '<i class="fa fa-child"/> Hello',
+                    contents: '<i class="glyphicon glyphicon-eye-open"/>',
                     tooltip: 'hello',
                     click: function () {
                         angular.element($('#postCtrlId')).scope().setVisible(true);
@@ -68,11 +71,17 @@
             var myapp = angular.module('myapp', []);
             myapp.controller('postCTRL', function ($scope) {
                 $scope.name = "madhawa";
+                $scope.img_insert = false;
                 $scope.modelvisible = false;
                 $scope.setVisible = function (state) {
                     $scope.$apply(function () {
                         $scope.modelvisible = state;
                     });
+
+                };
+                $scope.imgPreview = function () {
+                    $scope.img_insert = true;
+                    $('#thumbnailholder').html("<img src='" + $scope.image_source + "' class='img-responsive'/>");
 
                 };
 
@@ -81,8 +90,9 @@
                     var reader = new FileReader();
 
                     reader.onload = function (event) {
-                        $scope.image_source = event.target.result
-                        $scope.$apply()
+                        $scope.image_source = event.target.result;
+                        $scope.$apply();
+
 
                     };
                     // when the file is read it triggers the onload event above.
@@ -148,13 +158,12 @@
         </nav>
         <div id="postCtrlId" ng-controller="postCTRL">
             <div  class="container" >
-                <input type="file" id="trigger" onchange="angular.element(this).scope().setFile(this)" accept="image/*">
-                <img ng-src="{{image_source}}">
+
                 <?php echo validation_errors(); ?>
                 <?php echo form_open('create_post'); ?>
                 <form role="form">
                     <div class="form-group">
-                        <label for="article-name">Article title:{{modelvisible}}</label>
+                        <label for="article-name">Article title</label>
                         <input type="text" class="form-control" id="article-name" name="article-name">
                     </div>
                     <div class="form-group">
@@ -167,7 +176,7 @@
                     </div>
                     <button type="submit" class="btn btn-default">Post article</button> <br><br>
                     <div class="row">
-                        <textarea  id="summernote" name="summernote">write your post here.use markup buttons to style your post.</textarea >
+                        <textarea  id="summernote" name="summernote"></textarea >
                     </div>
                 </form>
             </div>
@@ -178,7 +187,7 @@
                 <div class="modal-dialog"> 
                     <div class="modal-content"> 
                         <div class="modal-header">  
-                            <button type="button" ng-click="modelvisible=false" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" ng-click="modelvisible = false" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true" >×</span>
                             </button>     
                             <h4 class="modal-title">Insert Image</h4>
@@ -186,7 +195,7 @@
                         <div class="modal-body">
                             <div class="form-group note-group-select-from-files">
                                 <label>Select from files</label>
-                                <input class="note-image-input form-control" name="files" accept="image/*" type="file">
+                                <input type="file" class="note-image-input form-control" id="trigger" onchange="angular.element(this).scope().setFile(this)" accept="image/*">
                             </div>
                             <div class="form-group" style="overflow:auto;">
                                 <label>Image URL</label>
@@ -194,7 +203,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button href="#" class="btn btn-primary note-image-btn disabled" disabled="">Insert Image</button>
+                            <button ng-click="imgPreview()" href="#" class="btn btn-primary note-image-btn">Insert Image</button>
                         </div> 
                     </div>
                 </div>
