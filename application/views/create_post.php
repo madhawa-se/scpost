@@ -27,7 +27,7 @@
             $(document).ready(function () {
                 $('#summernote').summernote({
                     toolbar: [
-                        ['mybutton', ['hello']],
+                        ['post', ['hello', 'border']],
                         ['style', ['style']],
                         ['font', ['bold', 'italic', 'underline', 'clear']],
                         ['fontname', ['fontname']],
@@ -40,7 +40,8 @@
                         ['help', ['help']]
                     ],
                     buttons: {
-                        hello: HelloButton
+                        hello: customButton.HelloButton,
+                        border: customButton.BorderButton
                     }
                 });
                 var node = document.createElement('p');
@@ -53,7 +54,8 @@
 
             });
 
-            var HelloButton = function (context) {
+            var customButton = {};
+            customButton.HelloButton = function (context) {
                 var ui = $.summernote.ui;
 
                 // create button
@@ -62,6 +64,21 @@
                     tooltip: 'hello',
                     click: function () {
                         angular.element($('#postCtrlId')).scope().setVisible(true);
+                    }
+                });
+
+                return button.render();   // return button as jquery object 
+            }
+            customButton.BorderButton = function (context) {
+                var ui = $.summernote.ui;
+
+                // create button
+                var button = ui.button({
+                    contents: '<i class="glyphicon glyphicon-minus"/>',
+                    tooltip: 'hello',
+                    click: function () {
+                        $('#thumbnailholder').css('border-top', '50px solid green');
+
                     }
                 });
 
@@ -82,6 +99,7 @@
                 $scope.imgPreview = function () {
                     $scope.img_insert = true;
                     $('#thumbnailholder').html("<img src='" + $scope.image_source + "' class='img-responsive center-block'/>");
+                    $('#thumbnailholder>img').css('width', '100%');
                     $("#summernote").val($("#summernote").code());
 
                 };

@@ -11,11 +11,14 @@ class Create_post extends MY_User {
     }
 
     function index() {
+        if (!$this->isUserLogged()) {
+            redirect('/login');
+        }
         $this->form_validation->set_rules('article-name', 'article name', 'required');
         $this->form_validation->set_rules('summernote', 'post content', 'required|min_length[5]');
         $this->form_validation->set_error_delimiters('<div class="alert alert-danger" role="alert">', '</div>');
 
-        echo 'summer note ' . $this->input->post('summernote') . "  is logeged " . $this->isUserLogged();
+        //echo 'summer note ' . $this->input->post('summernote') . "  is logeged " . $this->isUserLogged();
         if ($this->form_validation->run() == FALSE) {
 
             $this->load->view('create_post');
