@@ -81,7 +81,8 @@
                 };
                 $scope.imgPreview = function () {
                     $scope.img_insert = true;
-                    $('#thumbnailholder').html("<img src='" + $scope.image_source + "' class='img-responsive'/>");
+                    $('#thumbnailholder').html("<img src='" + $scope.image_source + "' class='img-responsive center-block'/>");
+                    $("#summernote").val($("#summernote").code());
 
                 };
 
@@ -156,6 +157,7 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
+        <button id="sourcegen">code</button>
         <div id="postCtrlId" ng-controller="postCTRL">
             <div  class="container" >
                 <div class="row">
