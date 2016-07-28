@@ -46,7 +46,7 @@ class Article_model extends CI_Model {
         return true;
     }
 
-    function insertArticleToDB($article_title) {
+    function insertArticleToDB($article_title,$user_id) {
         $date = date('Y-m-d H:i:s');
         $data = array(
             'title' => $article_title,
@@ -54,7 +54,7 @@ class Article_model extends CI_Model {
             'likes' => 0,
             'shares' => 0,
             'views' => 0,
-            'user_id' => 1,
+            'user_id' => $user_id,
             'category_id' => 1
         );
         $state = $this->db->insert('articles', $data);
@@ -70,7 +70,7 @@ class Article_model extends CI_Model {
         if (!isset($data['article-title'])) {
             return false;
         }
-        $resultArray = $this->insertArticleToDB($data['article-title']);
+        $resultArray = $this->insertArticleToDB($data['article-title'],$data['user_id']);
         if (!$resultArray['state']) {
             return false;
         }

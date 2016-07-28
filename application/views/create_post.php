@@ -158,27 +158,31 @@
         </nav>
         <div id="postCtrlId" ng-controller="postCTRL">
             <div  class="container" >
-
-                <?php echo validation_errors(); ?>
-                <?php echo form_open('create_post'); ?>
-                <form role="form">
-                    <div class="form-group">
-                        <label for="article-name">Article title</label>
-                        <input type="text" class="form-control" id="article-name" name="article-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="pwd">tags</label>
-                        <span class="article-tags">
-                            <span class="label label-success">biology </span>
-                            <span class="label label-warning">modern </span>
-                            <span class="label label-info">space </span> 
-                        </span>
-                    </div>
-                    <button type="submit" class="btn btn-default">Post article</button> <br><br>
-                    <div class="row">
+                <div class="row">
+                    <?php echo validation_errors(); ?>
+                    <?php echo form_open('create_post'); ?>
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="article-name">Article title</label>
+                            <input type="text" class="form-control" id="article-name" name="article-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">tags</label>
+                            <span class="article-tags">
+                                <span class="label label-success">biology </span>
+                                <span class="label label-warning">modern </span>
+                                <span class="label label-info">space </span> 
+                            </span>
+                        </div>
+                        <button type="submit" class="btn btn-default">Post article</button> <br><br>
                         <textarea  id="summernote" name="summernote"></textarea >
-                    </div>
-                </form>
+                    </form>
+                </div>
+
+
+
+
+
             </div>
 
             <!-- model-->
