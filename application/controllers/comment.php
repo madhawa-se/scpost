@@ -31,6 +31,7 @@ class Comment extends MY_User {
     function getPostComments($post_id, $start) {
         $this->load->model('comment_model');
         $res['comments'] = $this->comment_model->getPostComments($post_id, $start, 3);
+        // echo $this->db->last_query();
         header('Content-Type: application/json');
         echo(json_encode($res['comments']));
     }

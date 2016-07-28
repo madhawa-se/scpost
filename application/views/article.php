@@ -98,16 +98,17 @@
                 $scope.post_id;
 
                 $scope.comments = [];
-                $scope.lastcomment = 1;
+                $scope.lastcomment = 0;
                 $scope.lastName = "Doe";
                 var commentperload = 3;
                 $scope.hasMore = true;
 
                 $scope.getComment = function () {
+                    var post_id = $("#post_id").val();
                     if ($scope.hasMore) {
                         $http({
                             method: 'GET',
-                            url: '../comment/getPostComments/13/' + $scope.lastcomment
+                            url: '../comment/getPostComments/'+post_id+'/' + $scope.lastcomment
                         }).then(function successCallback(response) {
                             if (response.data.length < commentperload) {
                                 $scope.hasMore = false;
