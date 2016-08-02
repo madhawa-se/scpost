@@ -2,6 +2,10 @@
 
 class Article extends MY_Controller {
 
+    private $postPagiAmount = 10; //constant
+    private $postPopularIndex = 0;
+    private $postLatestIndex = 0;
+
     public function __construct() {
         parent::__construct();
         $this->load->helper('url');
@@ -24,6 +28,34 @@ class Article extends MY_Controller {
         $this->outdata['comments'] = $comments;
         //$outdata['ses_user']= $this->session->userdata('user');
         $this->load->view('article', $this->outdata);
+    }
+
+    function getLast() {
+        $this->load->model('article_model');
+        $latest = $this->article_model->getLast();
+        header('Content-Type: application/json');
+        echo(json_encode($latest));
+    }
+
+    function getpopular() {
+        $this->load->model('article_model');
+        $popular = $this->article_model->getpopular();
+        header('Content-Type: application/json');
+        echo(json_encode($popular));
+    }
+
+    function getPopularPosts($index) {
+        $this->load->model('article_model');
+        $popular = $this->article_model->baseGetPopular($this->postPagiAmount, $index);
+        header('Content-Type: application/json');
+        echo(json_encode($popular));
+    }
+
+    function getLatestPosts($index) {
+        $this->load->model('article_model');
+        $popular = $this->article_model->baseGetLastest($this->postPagiAmount, $index);
+        header('Content-Type: application/json');
+        echo(json_encode($popular));
     }
 
 }

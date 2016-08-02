@@ -46,7 +46,7 @@ class Article_model extends CI_Model {
         return true;
     }
 
-    function insertArticleToDB($article_title,$user_id) {
+    function insertArticleToDB($article_title, $user_id) {
         $date = date('Y-m-d H:i:s');
         $data = array(
             'title' => $article_title,
@@ -70,7 +70,7 @@ class Article_model extends CI_Model {
         if (!isset($data['article-title'])) {
             return false;
         }
-        $resultArray = $this->insertArticleToDB($data['article-title'],$data['user_id']);
+        $resultArray = $this->insertArticleToDB($data['article-title'], $data['user_id']);
         if (!$resultArray['state']) {
             return false;
         }
@@ -78,9 +78,26 @@ class Article_model extends CI_Model {
         return $state;
     }
 
-    function getPopularPosts() {
-        $this->db->select('*')->from('articles')->order_by('date', 'DESC')->limit(10); //constant
+    ////////////////////////////////////////////////////////
+
+    function baseGetPopular($start, $amount) {
+        $this->db->select('*')->from('articles')->order_by('views', 'DESC')->limit($start, $amount);
         return $this->db->get()->result();
+    }
+
+    function baseGetLastest($start, $amount) {
+        $this->db->select('*')->from('articles')->order_by('date', 'DESC')->limit($start, $amount); //constant
+        return $this->db->get()->result();
+    }
+
+    ////////////////////////////////////////////////////////
+
+    function getpopular() {
+        $this->baseGetPopular();
+    }
+
+    function getLast() {
+        $this->baseGetLastest();
     }
 
 }

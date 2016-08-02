@@ -12,15 +12,8 @@ class home extends CI_Controller {
     function index() {
 
         $post = array();
-        $post['popposts'] = $this->article_model->getPopularPosts();
-        $this->load->view('home', $post);
+        $this->load->view('home');
     }
 
-    function getPopularPosts() {
-        $this->load->model('Article_model');
-        $pop = $this->Article_model->getPopularPosts();
-        header('Content-Type: application/json');
-        echo(json_encode($pop));
-    }
 
 }

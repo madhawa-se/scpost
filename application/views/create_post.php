@@ -179,9 +179,8 @@
         <div id="postCtrlId" ng-controller="postCTRL">
             <div  class="container" >
                 <div class="row">
-                    <?php echo validation_errors(); ?>
-                    <?php echo form_open('create_post'); ?>
-                    <form role="form">
+
+                    <form method="post" role="form" action="../index.php/create_post/validate">
                         <div class="form-group">
                             <label for="article-name">Article title</label>
                             <input type="text" class="form-control" id="article-name" name="article-name">

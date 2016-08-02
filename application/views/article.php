@@ -108,7 +108,7 @@
                     if ($scope.hasMore) {
                         $http({
                             method: 'GET',
-                            url: '../comment/getPostComments/'+post_id+'/' + $scope.lastcomment
+                            url: '../comment/getPostComments/' + post_id + '/' + $scope.lastcomment
                         }).then(function successCallback(response) {
                             if (response.data.length < commentperload) {
                                 $scope.hasMore = false;
@@ -145,10 +145,10 @@
                 $scope.hotArticles;
                 $scope.count = 1;
                 $scope.loadLatest = function () {
-
+                    console.log("load latest");
                     $http({
                         method: 'GET',
-                        url: '../getArticles/getLast'
+                        url: '../article/getLast'
                     }).then(function successCallback(response) {
                         $scope.latestArticles = response.data;
                     }, function errorCallback(response) {
@@ -160,7 +160,7 @@
 
                     $http({
                         method: 'GET',
-                        url: '../getArticles/getpopular'
+                        url: '../article/getpopular'
                     }).then(function successCallback(response) {
                         $scope.hotArticles = response.data;
                     }, function errorCallback(response) {
@@ -190,10 +190,10 @@
                         <!-- Load Facebook SDK for JavaScript -->   
                         <div class="share-container">
                             <a class="share-social share-fb" onclick="popupwindow('http://www.facebook.com/sharer/sharer.php?u=http://www.sciencealert.com/new-algorithm-will-help-make-sure-random-numbers-really-are-random', 'Facebook Share', '600', '400')" >
-                                facebook
+                                <i class="fa fa-facebook"></i>
                             </a>
                             <a class ="share-social share-google" onclick="popupwindow('http://www.facebook.com/sharer/sharer.php?u=http://www.sciencealert.com/new-algorithm-will-help-make-sure-random-numbers-really-are-random', 'Facebook Share', '600', '400')">
-                                google +
+                               <i class="fa fa-google-plus"></i>
                             </a>
                         </div>
                         <!-- Your share button code -->
