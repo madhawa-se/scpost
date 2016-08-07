@@ -13,27 +13,35 @@ class Usersmodel extends CI_Model {
     }
 
     function RegisterUsers($firstname, $lastname, $username, $password, $email) {
+        $this->db->trans_begin();
         $options = array('cost' => 9);
 
         $password = password_hash($password, PASSWORD_BCRYPT, $options);
         $data = array('username' => $username, 'password' => $password);
         $state = $this->db->insert('login', $data);
         if ($state === false) {
-            return false;
+            return array('status' => 'false');
         }
         $insert_id = $this->db->insert_id();
-        $data = array('firstname' => $firstname, 'lastname' => $lastname, 'username' => $username, 'email' => $email, 'state' => 0, 'login_id' => $insert_id);
+        $data = array('firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'state' => 0, 'login_id' => $insert_id);
         $state = $this->db->insert('users', $data);
         if ($state === false) {
-            return false;
+            return array('status' => 'false');
         }
         $random_hash = substr(md5(uniqid(rand(), true)), 16, 16);
 
         $data = array('login_id' => $insert_id, 'hash' => $random_hash);
         //hash isn't unique plz check for exsisting hash
         $state = $this->db->insert('hash', $data);
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            echo "rollback";
+        } else {
+            $this->db->trans_commit();
+            echo "commit";
+        }
         if (!$state === false) {
-            return true;
+            return array('status' => 'true', 'hash' => $random_hash,'login_id'=>$insert_id);
         }
     }
 
@@ -52,6 +60,16 @@ class Usersmodel extends CI_Model {
             return $this->getUser($login_id);
         } else {
             return false;
+        }
+    }
+
+    function activeToken($login_id, $hash) {
+        $query = $this->db->where(array('login_id' => $login_id, 'hash' => $hash))->get('hash');
+        $num = $query->num_rows();
+        if (!($num > 0)) {
+            echo "Cannot activate.invalid token";
+        } else {
+             echo "activated";
         }
     }
 

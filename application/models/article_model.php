@@ -39,11 +39,25 @@ class Article_model extends CI_Model {
     }
 
     function writePost($post_id, $content) {
-        $state = file_put_contents("postdb/post_$post_id.html", $content);
+        return $this->writeFile("postdb/post_$post_id.html", $content);
+    }
+
+    function writeFile($path, $content) {
+        $state = file_put_contents($path, $content);
         if ($state === false) {
             return false;
         }
         return true;
+    }
+
+    function base64_to_jpeg($post_id,$base64_string) {
+        $output_file="postdb/thumbs/thumb_$post_id.jpg";
+        $ifp = fopen($output_file, "wb");
+
+        $data = explode(',', $base64_string);
+
+        fwrite($ifp, base64_decode($data[1]));
+        fclose($ifp);
     }
 
     function insertArticleToDB($article_title, $user_id) {
@@ -64,6 +78,7 @@ class Article_model extends CI_Model {
     }
 
     function insertArticle($data) {
+        var_dump($data);
         if (!isset($data['article-content'])) {
             return false;
         }
@@ -75,6 +90,10 @@ class Article_model extends CI_Model {
             return false;
         }
         $state = $this->writePost($resultArray['insert_id'], $data['article-content']);
+        if($state==true){
+            $state=$this->base64_to_jpeg($resultArray['insert_id'],$data['article-pic']);
+        }
+        
         return $state;
     }
 

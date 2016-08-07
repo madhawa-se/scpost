@@ -184,7 +184,9 @@
                     <div>
                         <div class="post-title h1"><?php echo $details['title'] ?></div>
                         <div>
-                            <div>author:<?php echo $details['author'] ?>  date: <?php echo $details['date'] ?></div>
+                            <div>author:<span><?php echo $details['author'] ?></span> <br>
+                                date: <span><?php echo $details['date'] ?></span>
+                            </div>
                             <div>shares:<?php echo $details['shares'] ?>  likes: <?php echo $details['likes'] ?>views: <?php echo $details['views'] ?></div>
                         </div>
                         <!-- Load Facebook SDK for JavaScript -->   
@@ -193,13 +195,14 @@
                                 <i class="fa fa-facebook"></i>
                             </a>
                             <a class ="share-social share-google" onclick="popupwindow('http://www.facebook.com/sharer/sharer.php?u=http://www.sciencealert.com/new-algorithm-will-help-make-sure-random-numbers-really-are-random', 'Facebook Share', '600', '400')">
-                               <i class="fa fa-google-plus"></i>
+                                <i class="fa fa-google-plus"></i>
                             </a>
                         </div>
                         <!-- Your share button code -->
                         <!-- <div class="post-img "><img class="img-responsive img-thumbnail" src="http://cdn.iflscience.com/images/7a360057-0107-58f9-a58d-64b2096d607a/extra_large-1466144127-chocolate-and-almonds.jpg"/></div>-->
                         <div class="post-auther"></div>
                         <div class="post-content">
+                            <?php echo "<div><img class='img-responsive center-block' src='../../postdb/thumbs/thumb_{$details['post_id']}.jpg'/></div>" ?>
                             <?php echo $posthtml ?>
                         </div>
 

@@ -36,8 +36,34 @@ class signup extends CI_Controller {
             $email = $this->input->post('email');
 
             $this->load->model('usersmodel');
-            $this->usersmodel->RegisterUsers($firstname, $lastname, $username, $password, $email);
+            $state = $this->usersmodel->RegisterUsers($firstname, $lastname, $username, $password, $email);
+            if ($state['status'] == TRUE) {
+                //echo $state['hash'];
+                $msg = "Dear $firstname thanks you for join with us. To activate your account please click this link.<a href='http://localhost/science_posts/index.php/signup/activate/{$state['login_id']}" . "/" . "{$state['hash']}'>Activate my account</a>";
+                $state = $this->sendEmail($email, "$msg");
+            } else {
+                echo "fail";
+            }
         }
+    }
+
+    function sendEmail($to, $msg) {
+        $this->load->library('email');
+        $this->email->set_mailtype("html");
+        $this->email->from("science@gmail.com", 'admin');
+        $this->email->to("$to");
+        $this->email->cc('account activation');
+        $this->email->bcc('account activation');
+
+        $this->email->subject('Email Test');
+        $this->email->message("$msg");
+
+        $state = $this->email->send();
+    }
+
+    function activate($user_id, $hash) {
+       $this->load->model('usersmodel');
+       $state = $this->usersmodel->activeToken($user_id, $hash);
     }
 
 }

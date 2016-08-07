@@ -26,6 +26,11 @@
         <script>
             $(document).ready(function () {
                 $('#summernote').summernote({
+                    callbacks: {
+                        onInit: function () {
+                            initPostControllers();
+                        }
+                    },
                     toolbar: [
                         ['post', ['hello', 'border']],
                         ['style', ['style']],
@@ -44,15 +49,16 @@
                         border: customButton.BorderButton
                     }
                 });
-                var node = document.createElement('p');
-                node.id = "thumbnailholder";
-                $('#summernote').summernote('insertNode', node)
+
                 $('#sourcegen').click(function () {
                     var markupStr = $('#summernote').summernote('code');
                     alert(markupStr);
                 });
 
             });
+            function initPostControllers() {
+                $(".note-editing-area").before("<div id='thumbnailholder'></div>");
+            }
 
             var customButton = {};
             customButton.HelloButton = function (context) {
@@ -86,7 +92,7 @@
             }
 
             var myapp = angular.module('myapp', []);
-            myapp.controller('postCTRL', function ($scope) {
+            myapp.controller('postCTRL', function ($scope, $http) {
                 $scope.name = "madhawa";
                 $scope.img_insert = false;
                 $scope.modelvisible = false;
@@ -94,30 +100,47 @@
                     $scope.$apply(function () {
                         $scope.modelvisible = state;
                     });
-
                 };
+                
                 $scope.imgPreview = function () {
                     $scope.img_insert = true;
                     $('#thumbnailholder').html("<img src='" + $scope.image_source + "' class='img-responsive center-block'/>");
                     $('#thumbnailholder>img').css('width', '100%');
-                    $("#summernote").val($("#summernote").code());
+                    //$("#summernote").val($("#summernote").code());
 
                 };
-
                 $scope.setFile = function (element) {
                     $scope.currentFile = element.files[0];
                     var reader = new FileReader();
-
                     reader.onload = function (event) {
                         $scope.image_source = event.target.result;
                         $scope.$apply();
-
-
                     };
                     // when the file is read it triggers the onload event above.
                     reader.readAsDataURL(element.files[0]);
                 };
+                $scope.submitr = function () {
+                    var markupStr = $('#summernote').summernote('code');
+                    $http({
+                        method: 'POST',
+                        url: '../index.php/create_post/validate',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        data: $.param({'article-name': $scope.articleName, summernote: markupStr, 'article-pic': $scope.image_source, 'article-border': 'red'})
+                    }).then(function successCallback(response) {
+                        console.log(response.data);
+                        errorBlock({'error': 'name', 'function': function () {
+                                //alert('hello')
+                            }});
+                    }, function errorCallback(response) {
+
+                    }
+                    );
+                };
+               
             });
+            function errorBlock(errobj) {
+                errobj.function();
+            }
 
 
         </script>
@@ -175,7 +198,7 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
-        <button id="sourcegen">code</button>
+
         <div id="postCtrlId" ng-controller="postCTRL">
             <div  class="container" >
                 <div class="row">
@@ -183,7 +206,7 @@
                     <form method="post" role="form" action="../index.php/create_post/validate">
                         <div class="form-group">
                             <label for="article-name">Article title</label>
-                            <input type="text" class="form-control" id="article-name" name="article-name">
+                            <input type="text" class="form-control" id="article-name" name="article-name" ng-model="articleName">
                         </div>
                         <div class="form-group">
                             <label for="pwd">tags</label>
@@ -193,8 +216,8 @@
                                 <span class="label label-info">space </span> 
                             </span>
                         </div>
-                        <button type="submit" class="btn btn-default">Post article</button> <br><br>
-                        <textarea  id="summernote" name="summernote"></textarea >
+                        <button type="button" class="btn btn-default" ng-click="submitr()">Post article</button> <br><br>
+                        <textarea  id="summernote" name="summernote" ></textarea >
                     </form>
                 </div>
 
